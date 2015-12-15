@@ -14,6 +14,9 @@ MainWindow::MainWindow(QWidget *parent) :
     }else{
         qDebug() << " ninguno de los anteriores";
     }
+   qDebug() << "Hola Con git";
+
+
 
 
 

@@ -18,7 +18,7 @@ SOURCES += main.cpp\
 HEADERS  += mainwindow.h
 
 FORMS    += mainwindow.ui
-
+unix{
 INCLUDEPATH += /opt/local/include
 
 LIBS += -L/opt/local/lib
@@ -27,3 +27,5 @@ LIBS += -lopencv_core \
 -lopencv_highgui \
 -lopencv_imgproc \
 -lopencv_video \
+}
+
