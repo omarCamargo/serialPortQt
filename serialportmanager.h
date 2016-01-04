@@ -12,8 +12,10 @@ public:
     explicit SerialPortManager(QObject *parent = 0);
 
 signals:
+    void messageReady(QString S);
 
 public slots:
+
 private:
     QSerialPort serialPort;
     QList<QSerialPortInfo> currentSerialPorts;
