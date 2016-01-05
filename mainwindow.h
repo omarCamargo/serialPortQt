@@ -7,6 +7,7 @@
 #include <QString>
 #include <QDebug>
 #include <QMessageBox>
+#include "serialportmanager.h"
 
 namespace Ui {
 class MainWindow;
@@ -35,6 +36,7 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+    SerialPortManager *manager;
     QString serialPortSelectedName;
     QString serialPortSelectedDescription;
     QSerialPort * Deviceserialport;

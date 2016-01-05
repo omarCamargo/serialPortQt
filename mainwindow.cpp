@@ -6,6 +6,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    manager = new SerialPortManager();
     conectedtoASerialPort=false;
 
    if( Deviceserialport == NULL){
@@ -29,36 +30,23 @@ MainWindow::~MainWindow()
     if(Deviceserialport != NULL && Deviceserialport->isOpen()){
         Deviceserialport->close();
     }
-
-
-
 }
 
 void MainWindow::on_btnBuscar_clicked()
 {
     ui->MylistWidget->clear();
-
-    serialList =  QSerialPortInfo::availablePorts();
-    foreach ( const QSerialPortInfo &info, serialList){
-        ui->MylistWidget->addItem(info.portName());
-    }
-
-
-
+    ui->MylistWidget->addItems(manager->searchAvailablePorts());
 }
 
 void MainWindow::on_MylistWidget_doubleClicked(const QModelIndex &index)
 {
-
-    serialPortSelectedName=index.data().toString();
-    QSerialPortInfo *port= new QSerialPortInfo(serialPortSelectedName);//ojo esto es absolutamente necesario puesto que index es una variable muy general, se debe obtener el data y luego convertirlo a qString
-    serialPortSelectedDescription=port->description();
-
-    ui->lblSerialName->setText(port->description());
-    ui->lblSerialManufacter->setText(port->manufacturer());
+    QString s = index.data().toString();
+    manager->setSelectedPort(&s);
+    ui->lblSerialDescription->setText(manager->getSelectedPortDescription());
+    ui->lblSerialManufacter->setText(manager->getSelectedPortManufacturer());
+    ui->lbl_PID->setText(QString::number(manager->getSelectedPortPID()));
+    ui->lbl_VID->setText(QString::number(manager->getSelectedPortVID()));
     ui->btnConectar->setEnabled(true);
-    ui->lbl_PID->setText( QString::number(port->productIdentifier()) );
-    ui->lbl_VID->setText( QString::number(port->vendorIdentifier()) );
 
 }
 
@@ -75,7 +63,7 @@ void MainWindow::on_btnConectar_clicked()
        disconnect(Deviceserialport, SIGNAL(readyRead()), this, SLOT(retrieveDataFromSerialPort()));
        ui->edtxEnviar->setText("");
        ui->lbldatosRecibidos->setText("------------------");
-       ui->lblSerialName->setText("------------");
+       ui->lblSerialDescription->setText("------------");
        ui->lblSerialManufacter->setText("------------");
        Deviceserialport->close();
 
@@ -180,7 +168,7 @@ void MainWindow::getErrorFromSerial(QSerialPort::SerialPortError err )
         disconnect(Deviceserialport, SIGNAL(readyRead()), this, SLOT(retrieveDataFromSerialPort()));
         ui->edtxEnviar->setText("");
         ui->lbldatosRecibidos->setText("------------------");
-        ui->lblSerialName->setText("------------");
+        ui->lblSerialDescription->setText("------------");
         ui->lblSerialManufacter->setText("------------");
         ui->MylistWidget->clear();
 
