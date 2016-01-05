@@ -5,6 +5,7 @@
 #include <QSerialPort>
 #include <QSerialPortInfo>
 #include <QStringList>
+#include <QDebug>
 #include <QList>
 
 class SerialPortManager : public QObject
@@ -18,18 +19,27 @@ public:
     QString getSelectedPortManufacturer();
     qint16  getSelectedPortVID();
     qint16 getSelectedPortPID();
+    bool isAnyPortConnected();
+    bool connectSelectedPort( QString portName);
+    bool disconnectSelectedPort();
 
 
     QSerialPortInfo *getSelectedPort() const;
     void setSelectedPort(QString *Name);
 
+    bool getPortConnected() const;
+    void setPortConnected(bool value);
+
 signals:
     void messageReady(QString S);
 
 public slots:
+    void newMessageFromSerialPortReady();
+    void getErrorFromSerial(QSerialPort::SerialPortError err);
 
 private:
-    QSerialPort serialPort;
+    bool portConnected;
+    QSerialPort *serialPort;
     QList<QSerialPortInfo> currentSerialPorts;
     QSerialPortInfo *selectedPort;
 };

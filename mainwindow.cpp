@@ -26,10 +26,6 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
-
-    if(Deviceserialport != NULL && Deviceserialport->isOpen()){
-        Deviceserialport->close();
-    }
 }
 
 void MainWindow::on_btnBuscar_clicked()
@@ -52,52 +48,27 @@ void MainWindow::on_MylistWidget_doubleClicked(const QModelIndex &index)
 
 void MainWindow::on_btnConectar_clicked()
 {
-   if(conectedtoASerialPort){
 
-       conectedtoASerialPort=false;
-       ui->btnConectar->setText("Conectar");
-       ui->btnConectar->setEnabled(false);
-       ui->lblSerialConected->setText("Sin Conexión");
-       ui->edtxEnviar->setEnabled(false);
-       ui->btnEnviar->setEnabled(false);
-       disconnect(Deviceserialport, SIGNAL(readyRead()), this, SLOT(retrieveDataFromSerialPort()));
-       ui->edtxEnviar->setText("");
-       ui->lbldatosRecibidos->setText("------------------");
-       ui->lblSerialDescription->setText("------------");
-       ui->lblSerialManufacter->setText("------------");
-       Deviceserialport->close();
+    if(!manager->isAnyPortConnected()){
+       if(manager->connectSelectedPort(manager->getSelectedPortName())){
+           ui->btnConectar->setText("Desconectar");
+           ui->edtxEnviar->setEnabled(true);
+           ui->btnEnviar->setEnabled(true);
+           ui->lblSerialConected->setText(manager->getSelectedPortDescription());
+       }else{
+           //error en conexión
+       }
+    }else{
+        if(manager->disconnectSelectedPort()){
+            ui->btnConectar->setText("Conectar");
+            ui->edtxEnviar->setEnabled(false);
+            ui->btnEnviar->setEnabled(false);
+            ui->lblSerialConected->setText("Sin Conexión");
+        }else{
+            //Error al cerrar el puerto;
+        }
+    }
 
-
-
-
-   }else{
-       conectedtoASerialPort=true;
-       ui->btnConectar->setText("Desconectar");
-       ui->lblSerialConected->setText(serialPortSelectedDescription);
-       Deviceserialport = new QSerialPort(serialPortSelectedName,this);
-       qDebug() << Deviceserialport;
-       Deviceserialport->setBaudRate(QSerialPort::Baud9600);
-       Deviceserialport->setDataBits(QSerialPort::Data8);
-       Deviceserialport->setParity(QSerialPort::NoParity);
-       Deviceserialport->setStopBits(QSerialPort::OneStop);
-       Deviceserialport->setFlowControl(QSerialPort::NoFlowControl);
-       bool result=Deviceserialport->open(QIODevice::ReadWrite);
-      if(result){
-          ui->edtxEnviar->setEnabled(true);
-          ui->btnEnviar->setEnabled(true);
-          connect(Deviceserialport, SIGNAL(readyRead()), this, SLOT(retrieveDataFromSerialPort()));
-          connect(Deviceserialport,SIGNAL(error(QSerialPort::SerialPortError)),this,SLOT(getErrorFromSerial(QSerialPort::SerialPortError)));
-          if( Deviceserialport != NULL){
-              qDebug() << " existe objeto";
-
-          }else{
-              qDebug() << " no existe objeto";
-
-          }
-
-
-      }//cierre if que pregunta por el resultado de intentar abrir el puerto
-   }
 }
 
 void MainWindow::on_btnEnviar_clicked()
@@ -110,46 +81,6 @@ void MainWindow::on_btnEnviar_clicked()
 
 void  MainWindow::retrieveDataFromSerialPort()
 {
-
-    quint8 valuint8;
-    quint16 valuint16;
-    QString messageReceived;
-
-    QByteArray mbyteArray = Deviceserialport->readAll();
-    qDebug()<< mbyteArray;
-    if(mbyteArray.at(0) == 'A' || mbyteArray.at(0) == 'P' ||  mbyteArray.at(0) == 'C' || mbyteArray.at(0) == '2' ){
-
-        if(mbyteArray.at(0)=='A'){
-            valuint16 = (mbyteArray.at(1)<<8)|mbyteArray.at(2);
-            messageReceived = "Valor actual de Presión: " +QString::number(valuint16)+" mmHg";
-        }else if(mbyteArray.at(0)=='P'){
-            valuint16 = (mbyteArray.at(1)<<8)|mbyteArray.at(2);
-            messageReceived = "Valor actual de la señal pulsatil: "+QString::number(valuint16);
-        }else if(mbyteArray.at(0)=='C'){
-            valuint16 = (mbyteArray.at(1)<<8)|mbyteArray.at(2);
-            messageReceived= "Valor del offset: "+QString::number(valuint16);
-        }else if(mbyteArray.at(0)=='2'){
-            valuint16 = (mbyteArray.at(1)<<8)|mbyteArray.at(2);
-            messageReceived = "Valor actual depresión: "+QString::number(valuint16)+" mmHg<br>";
-            valuint16 = (mbyteArray.at(3)<<8)|mbyteArray.at(4);
-            messageReceived = messageReceived +"Valor actual de la señal pulsatil: "+QString::number(valuint16);
-
-        }
-
-
-
-    }else if(mbyteArray.at(0)=='p' || mbyteArray.at(0)=='r'  || mbyteArray.at(0)=='s'|| mbyteArray.at(0)=='t'){
-
-        valuint8 =  (quint8) mbyteArray.at(1);
-        //qDebug() << valuint8
-        messageReceived = "potenciometro al nivel: "+ QString::number(valuint8);
-
-    }else{
-        messageReceived=QString(mbyteArray);
-    }
-
-
-    ui->lbldatosRecibidos->setText(messageReceived);
 
 
 }
