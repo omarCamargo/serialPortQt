@@ -9,17 +9,6 @@ MainWindow::MainWindow(QWidget *parent) :
     manager = new SerialPortManager();
     conectedtoASerialPort=false;
 
-   if( Deviceserialport == NULL){
-        qDebug() << "no existe objeto";
-
-    }else{
-        qDebug() << " ninguno de los anteriores";
-    }
-   qDebug() << "Hola Con git";
-
-
-
-
 
 }
 
