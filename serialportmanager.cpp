@@ -77,6 +77,11 @@ bool SerialPortManager::disconnectSelectedPort()
     return false;
 }
 
+void SerialPortManager::sendMessageToPort(QString message)
+{
+    serialPort->write(message.toStdString().c_str());
+}
+
 QSerialPortInfo *SerialPortManager::getSelectedPort() const
 {
     return selectedPort;

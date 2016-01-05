@@ -22,6 +22,7 @@ public:
     bool isAnyPortConnected();
     bool connectSelectedPort( QString portName);
     bool disconnectSelectedPort();
+    void sendMessageToPort(QString message);
 
 
     QSerialPortInfo *getSelectedPort() const;

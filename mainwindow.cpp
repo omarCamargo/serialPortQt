@@ -6,8 +6,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    manager = new SerialPortManager();
-    conectedtoASerialPort=false;
+    manager = new SerialPortManager(this);
+    connect(manager, SIGNAL(messageReady(QString)),this,SLOT(processMesageFromSerial(QString)));
 
 
 }
@@ -63,7 +63,7 @@ void MainWindow::on_btnConectar_clicked()
 void MainWindow::on_btnEnviar_clicked()
 {
 
-    Deviceserialport->write(ui->edtxEnviar->text().toStdString().c_str());
+    manager->sendMessageToPort(ui->edtxEnviar->text());
 
 }
 
@@ -72,6 +72,11 @@ void  MainWindow::retrieveDataFromSerialPort()
 {
 
 
+}
+
+void MainWindow::processMesageFromSerial(QString s)
+{
+    qDebug() << s;
 }
 
 void MainWindow::getErrorFromSerial(QSerialPort::SerialPortError err )
