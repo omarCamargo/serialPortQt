@@ -59,6 +59,8 @@ bool SerialPortManager::connectSelectedPort(QString portName)
         connect(serialPort, SIGNAL( readyRead() ), this, SLOT( newMessageFromSerialPortReady() ));
         connect(serialPort, SIGNAL( error(QSerialPort::SerialPortError) ), this, SLOT( getErrorFromSerial(QSerialPort::SerialPortError)) );
         setPortConnected(true);
+        finalMessage.clear();
+
         return true;
     }else{
         return false;
@@ -103,8 +105,14 @@ void SerialPortManager::setPortConnected(bool value)
 
 void SerialPortManager::newMessageFromSerialPortReady()
 {
-    QString message = QString(serialPort->readAll());
-    emit(messageReady(message));
+
+    QByteArray array = serialPort->readAll();
+    finalMessage.append(QString(array));
+    if (finalMessage.contains(QChar(10))){
+        emit(messageReady(finalMessage));
+        finalMessage.clear();
+    }
+
 
 }
 

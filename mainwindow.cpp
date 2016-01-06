@@ -6,6 +6,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    samplesCounter = 0;
+    setupQWtPlotWidget();
     manager = new SerialPortManager(this);
     connect(manager, SIGNAL(messageReady(QString)),this,SLOT(processMesageFromSerial(QString)));
 
@@ -15,6 +17,21 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::setupQWtPlotWidget()
+{
+    firstSignalCurve = new QwtPlotCurve();
+    firstSignalCurve->setTitle( "First" );
+    firstSignalCurve->setPen( Qt::red, 3 );
+    firstSignalCurve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
+    firstSignalCurve->attach(ui->widgetToPlot);
+
+    secondSignalCurve = new QwtPlotCurve();
+    secondSignalCurve->setTitle( "First" );
+    secondSignalCurve->setPen( Qt::blue, 3 );
+    secondSignalCurve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
+    secondSignalCurve->attach(ui->widgetToPlot);
 }
 
 void MainWindow::on_btnBuscar_clicked()
@@ -76,7 +93,21 @@ void  MainWindow::retrieveDataFromSerialPort()
 
 void MainWindow::processMesageFromSerial(QString s)
 {
-    qDebug() << s;
+    if(s.contains(',')){
+        QStringList list = s.split(',',QString::SkipEmptyParts);
+        if(ui->tabWidget->currentIndex() == 0){
+            ui->tabWidget->setCurrentIndex(1);
+        }
+        firstSignal.append(list.at(0).toDouble());
+        secondSignal.append(list.at(1).toDouble());
+        timeSignal.append(samplesCounter++);
+        firstSignalCurve->setSamples(timeSignal,firstSignal);
+        secondSignalCurve->setSamples(timeSignal,secondSignal);
+        ui->widgetToPlot->replot();
+    }else{
+        ui->lbldatosRecibidos->setText(s);
+    }
+
 }
 
 void MainWindow::getErrorFromSerial(QSerialPort::SerialPortError err )
@@ -99,4 +130,10 @@ void MainWindow::getErrorFromSerial(QSerialPort::SerialPortError err )
 
     }
 
+}
+
+void MainWindow::on_pushButton_clicked()
+{
+    manager->sendMessageToPort("S");
+    ui->tabWidget->setCurrentIndex(0);
 }

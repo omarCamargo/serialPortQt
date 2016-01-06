@@ -43,6 +43,7 @@ private:
     QSerialPort *serialPort;
     QList<QSerialPortInfo> currentSerialPorts;
     QSerialPortInfo *selectedPort;
+    QString finalMessage;
 };
 
 #endif // SERIALPORTMANAGER_H
