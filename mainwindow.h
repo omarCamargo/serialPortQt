@@ -7,6 +7,7 @@
 #include <QString>
 #include <QDebug>
 #include <QMessageBox>
+#include <qwt_plot.h>
 #include "serialportmanager.h"
 
 namespace Ui {
