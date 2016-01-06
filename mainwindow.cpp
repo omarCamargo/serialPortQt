@@ -32,6 +32,20 @@ void MainWindow::setupQWtPlotWidget()
     secondSignalCurve->setPen( Qt::blue, 3 );
     secondSignalCurve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
     secondSignalCurve->attach(ui->widgetToPlot);
+
+    ui->widgetToPlot->setCanvasBackground(QColor(Qt::white));
+
+}
+
+void MainWindow::clearQWtPlotWidget()
+{
+    firstSignal.clear();
+    secondSignal.clear();
+    timeSignal.clear();
+    samplesCounter = 0;
+    firstSignalCurve->setSamples(timeSignal,firstSignal);
+    secondSignalCurve->setSamples(timeSignal,secondSignal);
+    ui->widgetToPlot->replot();
 }
 
 void MainWindow::on_btnBuscar_clicked()
@@ -136,4 +150,6 @@ void MainWindow::on_pushButton_clicked()
 {
     manager->sendMessageToPort("S");
     ui->tabWidget->setCurrentIndex(0);
+
+
 }

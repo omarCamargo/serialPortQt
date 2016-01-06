@@ -29,6 +29,7 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     void setupQWtPlotWidget();
+    void clearQWtPlotWidget();
 
 private slots:
     void on_btnBuscar_clicked();

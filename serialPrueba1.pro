@@ -28,3 +28,6 @@ else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../../Qwt-6.1.
 
 INCLUDEPATH += $$PWD/../../../../../Qwt-6.1.2/include
 DEPENDPATH += $$PWD/../../../../../Qwt-6.1.2/include
+
+RESOURCES += \
+    resources.qrc
