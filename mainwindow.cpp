@@ -10,6 +10,7 @@ MainWindow::MainWindow(QWidget *parent) :
     setupQWtPlotWidget();
     manager = new SerialPortManager(this);
     connect(manager, SIGNAL(messageReady(QString)),this,SLOT(processMesageFromSerial(QString)));
+    on_btnBuscar_clicked();
 
 
 }
@@ -146,10 +147,11 @@ void MainWindow::getErrorFromSerial(QSerialPort::SerialPortError err )
 
 }
 
-void MainWindow::on_pushButton_clicked()
+
+
+void MainWindow::on_toolButton_clicked()
 {
     manager->sendMessageToPort("S");
+    clearQWtPlotWidget();
     ui->tabWidget->setCurrentIndex(0);
-
-
 }

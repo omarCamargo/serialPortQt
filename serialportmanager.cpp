@@ -108,9 +108,11 @@ void SerialPortManager::newMessageFromSerialPortReady()
 
     QByteArray array = serialPort->readAll();
     finalMessage.append(QString(array));
-    if (finalMessage.contains(QChar(10))){
-        emit(messageReady(finalMessage));
-        finalMessage.clear();
+
+    if (finalMessage.contains('\n')){
+        emit( messageReady( finalMessage.left( finalMessage.indexOf('\n')+1 ) ) );
+        finalMessage.remove(finalMessage.left( finalMessage.indexOf('\n')+1 ));
+
     }
 
 
