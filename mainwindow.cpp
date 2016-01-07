@@ -108,20 +108,24 @@ void  MainWindow::retrieveDataFromSerialPort()
 
 void MainWindow::processMesageFromSerial(QString s)
 {
-    if(s.contains(',')){
-        QStringList list = s.split(',',QString::SkipEmptyParts);
-        if(ui->tabWidget->currentIndex() == 0){
-            ui->tabWidget->setCurrentIndex(1);
-        }
-        firstSignal.append(list.at(0).toDouble());
-        secondSignal.append(list.at(1).toDouble());
-        timeSignal.append(samplesCounter++);
-        firstSignalCurve->setSamples(timeSignal,firstSignal);
-        secondSignalCurve->setSamples(timeSignal,secondSignal);
-        ui->widgetToPlot->replot();
-    }else{
-        ui->lbldatosRecibidos->setText(s);
+    if(s.length() == 7){
+        qDebug() << s;
+        manager->convertTwoBytestoUint16(s.at(0),s.at(1));
     }
+//    if(s.contains(',')){
+//        QStringList list = s.split(',',QString::SkipEmptyParts);
+//        if(ui->tabWidget->currentIndex() == 0){
+//            ui->tabWidget->setCurrentIndex(1);
+//        }
+//        firstSignal.append(list.at(0).toDouble());
+//        secondSignal.append(list.at(1).toDouble());
+//        timeSignal.append(samplesCounter++);
+//        firstSignalCurve->setSamples(timeSignal,firstSignal);
+//        secondSignalCurve->setSamples(timeSignal,secondSignal);
+//        ui->widgetToPlot->replot();
+//    }else{
+//        ui->lbldatosRecibidos->setText(s);
+//    }
 
 }
 

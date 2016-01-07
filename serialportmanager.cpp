@@ -84,6 +84,12 @@ void SerialPortManager::sendMessageToPort(QString message)
     serialPort->write(message.toStdString().c_str());
 }
 
+unsigned int SerialPortManager::convertTwoBytestoUint16(QChar msb, QChar lsb)
+{
+    unsigned int result = ((unsigned char) msb.toLatin1() << 8)| (unsigned char)lsb.toLatin1();
+    return result;
+}
+
 QSerialPortInfo *SerialPortManager::getSelectedPort() const
 {
     return selectedPort;

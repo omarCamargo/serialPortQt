@@ -23,6 +23,7 @@ public:
     bool connectSelectedPort( QString portName);
     bool disconnectSelectedPort();
     void sendMessageToPort(QString message);
+    unsigned int convertTwoBytestoUint16(QChar msb,QChar lsb);
 
 
     QSerialPortInfo *getSelectedPort() const;
