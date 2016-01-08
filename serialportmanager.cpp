@@ -84,9 +84,10 @@ void SerialPortManager::sendMessageToPort(QString message)
     serialPort->write(message.toStdString().c_str());
 }
 
-unsigned int SerialPortManager::convertTwoBytestoUint16(QChar msb, QChar lsb)
+unsigned int SerialPortManager::convertTwoBytestoUint16(unsigned char msb, unsigned char lsb)
 {
-    unsigned int result = ((unsigned char) msb.toLatin1() << 8)| (unsigned char)lsb.toLatin1();
+
+    unsigned int result = ( msb << 8) | lsb;
     return result;
 }
 
@@ -113,8 +114,8 @@ void SerialPortManager::newMessageFromSerialPortReady()
 {
 
     QByteArray array = serialPort->readAll();
-    finalMessage.append(QString(array));
 
+    finalMessage.append(QString(array.constData()));
     if (finalMessage.contains('\n')){
         emit( messageReady( finalMessage.left( finalMessage.indexOf('\n')+1 ) ) );
         finalMessage.remove(finalMessage.left( finalMessage.indexOf('\n')+1 ));

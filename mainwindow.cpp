@@ -109,8 +109,14 @@ void  MainWindow::retrieveDataFromSerialPort()
 void MainWindow::processMesageFromSerial(QString s)
 {
     if(s.length() == 7){
+        unsigned char MSB;
+        unsigned char LSB;
+        QByteArray array = s.toLatin1();
+        MSB = array.at(0);
+        LSB = array.at(1);
+        qDebug() << manager->convertTwoBytestoUint16(MSB,LSB);
+    }else{
         qDebug() << s;
-        manager->convertTwoBytestoUint16(s.at(0),s.at(1));
     }
 //    if(s.contains(',')){
 //        QStringList list = s.split(',',QString::SkipEmptyParts);
