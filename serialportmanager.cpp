@@ -107,13 +107,14 @@ void SerialPortManager::newMessageFromSerialPortReady()
 {
 
     QByteArray array = serialPort->readAll();
-    finalMessage.append(QString(array));
+    emit(messageReady(array));
+//    finalMessage.append(array);
 
-    if (finalMessage.contains('\n')){
-        emit( messageReady( finalMessage.left( finalMessage.indexOf('\n')+1 ) ) );
-        finalMessage.remove(finalMessage.left( finalMessage.indexOf('\n')+1 ));
+//    if (finalMessage.contains('\n')){
+//        emit( messageReady( finalMessage.left( finalMessage.indexOf('\n')+1 ) ) );
+//        finalMessage.remove(0, finalMessage.indexOf('\n'));
 
-    }
+//    }
 
 
 }

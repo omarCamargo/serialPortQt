@@ -9,7 +9,7 @@ MainWindow::MainWindow(QWidget *parent) :
     samplesCounter = 0;
     setupQWtPlotWidget();
     manager = new SerialPortManager(this);
-    connect(manager, SIGNAL(messageReady(QString)),this,SLOT(processMesageFromSerial(QString)));
+    connect(manager, SIGNAL(messageReady(QByteArray)),this,SLOT(processMesageFromSerial(QByteArray)));
     on_btnBuscar_clicked();
 
 
@@ -106,21 +106,27 @@ void  MainWindow::retrieveDataFromSerialPort()
 
 }
 
-void MainWindow::processMesageFromSerial(QString s)
+void MainWindow::processMesageFromSerial(QByteArray arr)
 {
-    if(s.contains(',')){
-        QStringList list = s.split(',',QString::SkipEmptyParts);
-        if(ui->tabWidget->currentIndex() == 0){
-            ui->tabWidget->setCurrentIndex(1);
+    int var1=0;
+    int var2=0;
+    if(arr.contains('P')){
+        if(arr.length() == 7){
+            var1=QString(arr[1]+arr[2]+arr[3]).toInt();
+            var2=QString(arr[4]+arr[5]+arr[6]).toInt();
         }
-        firstSignal.append(list.at(0).toDouble());
-        secondSignal.append(list.at(1).toDouble());
-        timeSignal.append(samplesCounter++);
-        firstSignalCurve->setSamples(timeSignal,firstSignal);
-        secondSignalCurve->setSamples(timeSignal,secondSignal);
-        ui->widgetToPlot->replot();
+//        QStringList list = arr.split(',',QString::SkipEmptyParts);
+//        if(ui->tabWidget->currentIndex() == 0){
+//            ui->tabWidget->setCurrentIndex(1);
+//        }
+//        firstSignal.append(list.at(0).toDouble());
+//        secondSignal.append(list.at(1).toDouble());
+//        timeSignal.append(samplesCounter++);
+//        firstSignalCurve->setSamples(timeSignal,firstSignal);
+//        secondSignalCurve->setSamples(timeSignal,secondSignal);
+//        ui->widgetToPlot->replot();
     }else{
-        ui->lbldatosRecibidos->setText(s);
+        ui->lbldatosRecibidos->setText(arr);
     }
 
 }

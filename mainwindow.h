@@ -42,7 +42,7 @@ private slots:
 
     void retrieveDataFromSerialPort();
 
-    void processMesageFromSerial(QString s);
+    void processMesageFromSerial(QByteArray arr);
 
     void getErrorFromSerial(QSerialPort::SerialPortError err);
 

@@ -32,7 +32,7 @@ public:
     void setPortConnected(bool value);
 
 signals:
-    void messageReady(QString S);
+    void messageReady(QByteArray arr);
 
 public slots:
     void newMessageFromSerialPortReady();
@@ -43,7 +43,7 @@ private:
     QSerialPort *serialPort;
     QList<QSerialPortInfo> currentSerialPorts;
     QSerialPortInfo *selectedPort;
-    QString finalMessage;
+    QByteArray finalMessage;
 };
 
 #endif // SERIALPORTMANAGER_H
