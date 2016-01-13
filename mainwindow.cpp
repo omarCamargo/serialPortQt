@@ -49,6 +49,37 @@ void MainWindow::clearQWtPlotWidget()
     ui->widgetToPlot->replot();
 }
 
+void MainWindow::exportCurvesToFile()
+{
+    QTextStream out;
+
+    if( !timeSignal.isEmpty() && !firstSignal.isEmpty() && !secondSignal.isEmpty() ){
+        QString fileName = QFileDialog::getSaveFileName(this,
+                                                        tr("Guardar Archivo"),
+                                                        QString(QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation)),tr("Text files (*.txt)"));
+        if( ! fileName.isEmpty() ){
+            //se dio una dirección: Código
+            QFile file(fileName);
+            file.open(QIODevice::WriteOnly | QIODevice::Text);
+            if(!file.isOpen()){
+                qDebug()<< ":( vida gono";
+            }else{
+                out.setDevice(&file);
+                out << "Time" << "," << "Value Var1" << "," << "Value Var2" <<","  << " frequency = :(" << endl;
+                for(int i =0; i < firstSignal.count();i++){
+                    out << QString::number(timeSignal.at(i))<<","<<QString::number(firstSignal.at(i))<<","<<QString::number(secondSignal.at(i)) << endl;
+                }
+                file.flush();
+                file.close();
+            }
+         }
+    }else{
+        QMessageBox::warning(this,"Advertencia","No hay señales para exportar");
+    }
+
+
+}
+
 void MainWindow::on_btnBuscar_clicked()
 {
     ui->MylistWidget->clear();
@@ -112,19 +143,18 @@ void MainWindow::processMesageFromSerial(QByteArray arr)
     int var2=0;
     if(arr.contains('P')){
         if(arr.length() == 7){
-            var1=QString(arr[1]+arr[2]+arr[3]).toInt();
-            var2=QString(arr[4]+arr[5]+arr[6]).toInt();
+            if(ui->tabWidget->currentIndex() == 0){
+                        ui->tabWidget->setCurrentIndex(1);
+            }
+            var1=QString(arr.mid(1,3)).toInt();
+            var2=QString(arr.mid(4,3)).toInt();
+            firstSignal.append(double(var1));
+            secondSignal.append(double(var2));
+            timeSignal.append(samplesCounter++);
+            firstSignalCurve->setSamples(timeSignal,firstSignal);
+            secondSignalCurve->setSamples(timeSignal,secondSignal);
+            ui->widgetToPlot->replot();
         }
-//        QStringList list = arr.split(',',QString::SkipEmptyParts);
-//        if(ui->tabWidget->currentIndex() == 0){
-//            ui->tabWidget->setCurrentIndex(1);
-//        }
-//        firstSignal.append(list.at(0).toDouble());
-//        secondSignal.append(list.at(1).toDouble());
-//        timeSignal.append(samplesCounter++);
-//        firstSignalCurve->setSamples(timeSignal,firstSignal);
-//        secondSignalCurve->setSamples(timeSignal,secondSignal);
-//        ui->widgetToPlot->replot();
     }else{
         ui->lbldatosRecibidos->setText(arr);
     }
@@ -158,6 +188,16 @@ void MainWindow::getErrorFromSerial(QSerialPort::SerialPortError err )
 void MainWindow::on_toolButton_clicked()
 {
     manager->sendMessageToPort("S");
+    //clearQWtPlotWidget();
+    //ui->tabWidget->setCurrentIndex(0);
+}
+
+void MainWindow::on_toolButton_3_clicked()
+{
     clearQWtPlotWidget();
-    ui->tabWidget->setCurrentIndex(0);
+}
+
+void MainWindow::on_toolButton_2_clicked()
+{
+    exportCurvesToFile();
 }

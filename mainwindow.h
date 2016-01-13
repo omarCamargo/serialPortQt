@@ -2,11 +2,13 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QtCore>
 #include <qserialport>
 #include <QSerialPortInfo>
 #include <QString>
 #include <QDebug>
 #include <QMessageBox>
+#include <QFileDialog>
 
 #include <qwt_plot.h>
 #include <qwt_plot_grid.h>
@@ -30,6 +32,7 @@ public:
     ~MainWindow();
     void setupQWtPlotWidget();
     void clearQWtPlotWidget();
+    void exportCurvesToFile();
 
 private slots:
     void on_btnBuscar_clicked();
@@ -49,6 +52,10 @@ private slots:
 
 
     void on_toolButton_clicked();
+
+    void on_toolButton_3_clicked();
+
+    void on_toolButton_2_clicked();
 
 private:
     Ui::MainWindow *ui;
