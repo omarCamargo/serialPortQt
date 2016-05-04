@@ -22,12 +22,24 @@ HEADERS  += mainwindow.h \
 FORMS    += mainwindow.ui
 
 
-
+win32:{
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../../Qwt-6.1.2/lib/ -lqwt
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../../Qwt-6.1.2/lib/ -lqwtd
-
 INCLUDEPATH += $$PWD/../../../../../Qwt-6.1.2/include
 DEPENDPATH += $$PWD/../../../../../Qwt-6.1.2/include
+}
+
+
+unix:!macx{
+unix:!macx: LIBS += -L$$PWD/../../../../usr/local/qwt-6.1.2/lib/ -lqwt
+
+INCLUDEPATH += $$PWD/../../../../usr/local/qwt-6.1.2/include
+DEPENDPATH += $$PWD/../../../../usr/local/qwt-6.1.2/include
+
+}
+
 
 RESOURCES += \
     resources.qrc
+
+

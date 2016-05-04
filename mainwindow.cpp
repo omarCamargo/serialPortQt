@@ -142,20 +142,25 @@ void MainWindow::processMesageFromSerial(QByteArray arr)
     int var1=0;
     int var2=0;
     if(arr.contains('P')){
-        if(arr.length() == 7){
+        if(arr.length() == 6){
             if(ui->tabWidget->currentIndex() == 0){
                         ui->tabWidget->setCurrentIndex(1);
             }
-            var1=QString(arr.mid(1,3)).toInt();
-            var2=QString(arr.mid(4,3)).toInt();
+            var1=QString(arr.left(3)).toInt();
+            var2=QString(arr.right(3)).toInt();
             firstSignal.append(double(var1));
             secondSignal.append(double(var2));
             timeSignal.append(samplesCounter++);
             firstSignalCurve->setSamples(timeSignal,firstSignal);
             secondSignalCurve->setSamples(timeSignal,secondSignal);
             ui->widgetToPlot->replot();
+        }else if(arr.length() == 7){
+            if(arr.at(0)== 'w'){
+                ui->lblPressures->setText( QString::number(QString(arr.mid(1,3).toInt()))+" / "+QString::number(QString(arr.mid(4,3).toInt()))+" ("+QString::number(QString(arr.right(3).toInt()))+")" );
+            }
         }
     }else{
+        qDebug()<<arr;
         ui->lbldatosRecibidos->setText(arr);
     }
 

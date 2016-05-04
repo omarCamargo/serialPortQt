@@ -3,7 +3,7 @@
 
 #include <QMainWindow>
 #include <QtCore>
-#include <qserialport>
+#include <QSerialPort>
 #include <QSerialPortInfo>
 #include <QString>
 #include <QDebug>
