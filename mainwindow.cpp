@@ -141,11 +141,39 @@ void MainWindow::processMesageFromSerial(QByteArray arr)
 {
     int var1=0;
     int var2=0;
-    if(arr.contains('P')){
-        if(arr.length() == 6){
-            if(ui->tabWidget->currentIndex() == 0){
-                        ui->tabWidget->setCurrentIndex(1);
-            }
+
+    if(arr.length() ==3){
+        if(arr.at(0) =='M'){
+            var1=QString(arr.at(1)).toInt();
+            var2=QString(arr.at(2)).toInt();
+            firstSignal.append(double(var1));
+            secondSignal.append(double(var2));
+            timeSignal.append(samplesCounter++);
+            firstSignalCurve->setSamples(timeSignal,firstSignal);
+            secondSignalCurve->setSamples(timeSignal,secondSignal);
+            ui->widgetToPlot->replot();
+        }
+    }else if(arr.length() == 4){
+        if(arr.at(0)=='F'){
+            ui->lblOffset->setText(QString::number(QString(arr.right(3)).toInt()));
+
+
+        }
+    }else if(arr.length() == 6){
+        if(ui->tabWidget->currentIndex() == 0){
+            ui->tabWidget->setCurrentIndex(1);
+        }
+
+        if(arr.at(3)=='M'){
+            var1=QString(arr.at(4)).toInt();
+            var2=QString(arr.at(5)).toInt();
+            firstSignal.append(double(var1));
+            secondSignal.append(double(var2));
+            timeSignal.append(samplesCounter++);
+            firstSignalCurve->setSamples(timeSignal,firstSignal);
+            secondSignalCurve->setSamples(timeSignal,secondSignal);
+            ui->widgetToPlot->replot();
+        }else{
             var1=QString(arr.left(3)).toInt();
             var2=QString(arr.right(3)).toInt();
             firstSignal.append(double(var1));
@@ -154,10 +182,23 @@ void MainWindow::processMesageFromSerial(QByteArray arr)
             firstSignalCurve->setSamples(timeSignal,firstSignal);
             secondSignalCurve->setSamples(timeSignal,secondSignal);
             ui->widgetToPlot->replot();
-        }else if(arr.length() == 7){
-            if(arr.at(0)== 'w'){
-                ui->lblPressures->setText( QString::number(QString(arr.mid(1,3).toInt()))+" / "+QString::number(QString(arr.mid(4,3).toInt()))+" ("+QString::number(QString(arr.right(3).toInt()))+")" );
-            }
+        }
+
+    }else if(arr.length() == 7){
+        if(arr.at(0)== 'P'){
+            var1=QString(QString(arr.mid(1,3))).toInt();
+            var2=QString(arr.right(3)).toInt();
+            firstSignal.append(double(var1));
+            secondSignal.append(double(var2));
+            timeSignal.append(samplesCounter++);
+            firstSignalCurve->setSamples(timeSignal,firstSignal);
+            secondSignalCurve->setSamples(timeSignal,secondSignal);
+            ui->widgetToPlot->replot();
+        }
+    }else if(arr.length() == 10){
+        if(arr.at(0)== 'W'){
+            qDebug() << arr;
+            ui->lblPressures->setText( QString::number(QString(arr.mid(1,3)).toInt())+" / "+QString::number(QString(arr.mid(4,3)).toInt())+" ("+QString::number(QString(arr.right(3)).toInt())+")" );
         }
     }else{
         qDebug()<<arr;
