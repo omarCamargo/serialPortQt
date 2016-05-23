@@ -3,5 +3,6 @@
         <file>export.png</file>
         <file>stop.png</file>
         <file>clear.png</file>
+        <file>Files-icon.png</file>
     </qresource>
 </RCC>

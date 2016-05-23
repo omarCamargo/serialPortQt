@@ -14,10 +14,12 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    serialportmanager.cpp
+    serialportmanager.cpp \
+    signalprocessor.cpp
 
 HEADERS  += mainwindow.h \
-    serialportmanager.h
+    serialportmanager.h \
+    signalprocessor.h
 
 FORMS    += mainwindow.ui
 

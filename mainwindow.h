@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QtCore>
+#include <QTime>
 #include <QSerialPort>
 #include <QSerialPortInfo>
 #include <QString>
@@ -18,6 +19,8 @@
 #include <qwt_plot_curve.h>
 
 #include "serialportmanager.h"
+#include "signalprocessor.h"
+
 
 namespace Ui {
 class MainWindow;
@@ -34,6 +37,9 @@ public:
     void clearQWtPlotWidget();
     void exportCurvesToFile();
 
+signals:
+    void dataToSignalProcessor(int s1, int s2 );
+
 private slots:
     void on_btnBuscar_clicked();
 
@@ -49,13 +55,17 @@ private slots:
 
     void getErrorFromSerial(QSerialPort::SerialPortError err);
 
-
-
     void on_toolButton_clicked();
 
     void on_toolButton_3_clicked();
 
     void on_toolButton_2_clicked();
+
+    void displayarterialpressures(int pdist, int psist);
+
+    void on_toolButton_4_clicked();
+
+    void on_tabWidget_currentChanged(int index);
 
 private:
     Ui::MainWindow *ui;
@@ -72,6 +82,10 @@ private:
     QVector<double> secondSignal;
     QVector<double> timeSignal;
     int samplesCounter;
+    int finishReadFlag;
+
+    SignalProcessor *msignalProcessor;
+    void delay(int ms);
 
 };
 
